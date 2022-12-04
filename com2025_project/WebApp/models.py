@@ -20,6 +20,7 @@ class users(models.Model):
 class modules(models.Model):
 	name = models.CharField(max_length = 50, primary_key = True)
 	course = models.ForeignKey(courses, on_delete = models.CASCADE)
+	credits = models.IntegerField(default = 15)
 	one = 1
 	two = 2
 	Semester_choice = ((one,"one"),(two,"two"))
