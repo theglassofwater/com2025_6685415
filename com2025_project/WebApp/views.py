@@ -6,10 +6,11 @@ from .forms import register_user
 
 
 def home(request):
-
-	return render(request, 'WebApp/home.html', {})
+	context = {}
+	return render(request, 'WebApp/home.html', context)
 
 def register(request):
+	context = {}
 	if request.method == "POST":
 		register_data = register_user(request.POST)
 
@@ -26,10 +27,13 @@ def register(request):
 
 	else:
 		register_data = register_user()
-	return render(request, 'WebApp/register.html', {"form":register_data})
+		context["form"] = register_data
+
+	return render(request, 'WebApp/register.html', context)
 
 def login(request):
-	return render(request, 'WebApp/login.html', {})
+	context = {}
+	return render(request, 'WebApp/login.html', context)
 
 def contact(request):
 	return HttpResponse("contact")
