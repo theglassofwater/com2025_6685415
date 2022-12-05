@@ -9,8 +9,6 @@ class course_selection(forms.Select):
 			option["attrs"]["Course"] = value.instance.name 
 		return option
 
-
-
 class register_user(forms.Form):
 	fname = forms.CharField(label = "First name " , max_length = 25)
 	lname = forms.CharField(label = "Last name " , max_length = 25)
