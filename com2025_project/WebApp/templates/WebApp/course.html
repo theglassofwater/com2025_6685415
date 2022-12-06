@@ -1,0 +1,23 @@
+{% extends 'WebApp/structure.html' %}
+
+{%block title%} home {%endblock%}
+
+
+{% block header%}
+<h1>  {{course}} </h1>
+{%endblock%}
+
+{% block content %}
+<form method = "POST" action = "/course/">
+	{% csrf_token %}
+	{{form.as_p}}
+	{{incorrect}}
+	<button type ="submit", name = "save" >Save modules</button>
+</form>
+{%endblock%}
+
+{% block sidebar_option %}
+<a href="/course">{{course}}</a>
+<a href="/logout">{{logout}}</a>
+
+{%endblock%}

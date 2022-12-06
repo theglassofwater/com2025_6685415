@@ -2,12 +2,16 @@
 
 {%block title%} register {%endblock%}
 
+{%block header%}
+<h1> Registiration </h1>
+{%endblock%}
+
 {% block content%}
-<h1> register </h1>
+
 <form method = "POST" action = "/register/">
 	{% csrf_token %}
 	{{form.as_p}}
 	{{incorrect}}
-	<button type ="submit", name = "save" >login</button>
+	<button type ="submit", name = "save" >Register</button>
 </form>
 {%endblock%}

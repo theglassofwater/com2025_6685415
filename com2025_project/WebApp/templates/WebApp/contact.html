@@ -1,0 +1,29 @@
+{% extends "WebApp/structure.html" %}
+
+ {% block title %}
+      Contact
+ {% endblock title%}
+
+
+
+
+{%block header%}
+<h1>Contact Us</h1>
+{%endblock%}
+{% block content %} 
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="form-actions">
+      <button type="submit">Send</button>
+    </div>
+</form>
+
+{% endblock content %} 
+
+{% block sidebar_option %}
+<a href="/course">{{course}}</a>
+<a href="/logout">{{logout}}</a>
+
+{%endblock%}
+

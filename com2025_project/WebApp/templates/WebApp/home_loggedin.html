@@ -2,14 +2,13 @@
 
 {%block title%} home {%endblock%}
 
-{% block header%}
-<h1> home </h1>
-{%endblock%}
+
 {% block content%}
-<h1> {{signin}} </h1>
+<h1> home </h1>
 {%endblock%}
 
 {% block sidebar_option %}
-<a href="/register">Register</a>
-<a href="/login">Login</a>
+<a href="/course">{{course}}</a>
+<a href="/logout">{{logout}}</a>
+
 {%endblock%}

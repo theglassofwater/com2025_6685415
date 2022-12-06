@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect 
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import courses,users,modules,user_modules
-from .forms import register_user,login_user
+from .forms import register_user,login_user,ContactForm,modules_form
+from django.core.mail import send_mail, BadHeaderError 
+from django.contrib import messages 
+
 # Create your views here.
 
 def logout(request):
@@ -14,7 +17,17 @@ def home(request):
 		return render(request, 'WebApp/home.html', context)
 	context["course"] = request.session.get('course')
 	context["logout"] = "Log out"
-	return render(request, 'WebApp/home.html', context)
+	return render(request, 'WebApp/home_loggedin.html', context)
+
+
+def home_loggedin(request):
+	context = {}
+	if request.session.get('id') == None:
+		return render(request, 'WebApp/home.html', context)
+	context["course"] = request.session.get('course')
+	context["logout"] = "Log out"
+	return render(request, 'WebApp/home_loggedin.html', context)
+
 
 def register(request):
 	context = {}
@@ -72,7 +85,65 @@ def login(request):
 	return render(request, 'WebApp/login.html', context)
 
 def contact(request):
-	return HttpResponse("contact")
+	context = {}
+	if request.session.get('id') == None:
+		context["signin"] = "You must sign in before trying to contact us"
+		return render(request, 'WebApp/home.html', context)
+	if request.method == "GET":
+		form = ContactForm() 
+	else:
+		form = ContactForm(request.POST) 
+		if form.is_valid(): 
+			name = form.cleaned_data['name'] 
+			subject = form.cleaned_data['subject'] 
+			email = form.cleaned_data['email'] 
+			message = name + ':\n' + form.cleaned_data['message'] 
+			try: 
+				send_mail(subject, message, email, ['myemail@mydomain.com'])
+			except BadHeaderError: 
+				messages.add_message(request, messages.ERROR, 'Message Not Sent') 
+				return HttpResponse("Invalid header found.") 
 
-def module(request):
-	return HttpResponse("module")
+			messages.add_message(request, messages.SUCCESS, 'Message Sent')
+			return redirect(reverse('home'))
+		else:
+			messages.add_message(request, messages.ERROR, 'Invalid Form Data; Message Not Sent') 
+	context["course"] = request.session.get('course')
+	context["logout"] = "Log out"
+	context["form"] = form
+	return render(request, 'WebApp/contact.html', context) 
+
+
+def course(request):
+	context = {}
+	if request.method == "POST":
+		course_data = modules_form(request.POST)
+
+		if course_data.is_valid():
+			modules = []
+			credits=0
+			for i in range(1,5):
+				
+				modules.append(course_data.cleaned_data["module"+str(i)])
+				credits = credits + modules[i-1].credits
+			#if not users.objects.filter(username=username):
+
+			if credits > 80:
+				context["incorrect"] = "Too many credits selected and atleast 3 modules must be selected"
+				context["course"] = request.session.get('course')
+				context["logout"] = "Log out"
+				context["form"] = modules_form()
+				return render(request, 'WebApp/course.html', context)
+
+			for module in modules:
+				module_user = user_modules(user= users.objects.get(id=request.session.get("id")), module = module)
+				module_user.save()
+			return HttpResponseRedirect("/home")
+		else:
+			context["incorrect"] = "Too many credits selected and atleast 3 modules must be selected"
+
+	#context = {}
+	context["course"] = request.session.get('course')
+	context["logout"] = "Log out"
+	context["form"] = modules_form()
+	return render(request, 'WebApp/course.html', context)

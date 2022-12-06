@@ -31,7 +31,7 @@ class modules(models.Model):
 	Semester_choice = ((one,"one"),(two,"two"))
 	semester = models.IntegerField(default = one, choices = Semester_choice)
 	def __str__(self):
-		return self.name
+		return self.name + ", " + str(self.credits)
 
 class user_modules(models.Model):
 	user = models.ForeignKey(users, on_delete = models.CASCADE)
