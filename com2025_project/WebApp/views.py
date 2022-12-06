@@ -4,10 +4,16 @@ from .models import courses,users,modules,user_modules
 from .forms import register_user,login_user
 # Create your views here.
 
+def logout(request):
+	request.session.flush()
+	return render(request, 'WebApp/home.html')
 
 def home(request):
 	context = {}
+	if request.session.get('id') == None:
+		return render(request, 'WebApp/home.html', context)
 	context["course"] = request.session.get('course')
+	context["logout"] = "Log out"
 	return render(request, 'WebApp/home.html', context)
 
 def register(request):
@@ -28,6 +34,7 @@ def register(request):
 				username_id = users.objects.get(username=username) #register_data.cleaned_data["username"].id
 				request.session['id'] = username_id.id
 				request.session['course'] = username_id.course.name
+				request.session["logged_in"] = "Logout"
 				return HttpResponseRedirect("/home")
 			else:
 				context["incorrect"] = "Username already taken"
@@ -51,6 +58,7 @@ def login(request):
 				if user_data.get_password() == password:
 					request.session["id"] = user_data.id
 					request.session["course"] = user_data.course.name
+					request.session["logged_in"] = "Logout"
 					return HttpResponseRedirect("/home")
 				else:
 					context["incorrect"] = "Password does not match username"

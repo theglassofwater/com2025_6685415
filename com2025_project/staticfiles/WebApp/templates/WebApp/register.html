@@ -1,0 +1,13 @@
+{% extends 'WebApp/structure.html' %}
+
+{%block title%} register {%endblock%}
+
+{% block content%}
+<h1> register </h1>
+<form method = "POST" action = "/register/">
+	{% csrf_token %}
+	{{form.as_p}}
+	{{incorrect}}
+	<button type ="submit", name = "save" >login</button>
+</form>
+{%endblock%}

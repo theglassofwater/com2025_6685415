@@ -4,7 +4,10 @@
 
 
 {% block content%}
-<h1> home {{course}}</h1>
+<h1> home </h1>
 {%endblock%}
 
-{{course}}
+{% block sidebar_option %}
+<a href="/module">{{course}}</a>
+<a href="/logout">{{logout}}</a>
+{%endblock%}
